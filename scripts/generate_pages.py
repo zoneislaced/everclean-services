@@ -24,47 +24,90 @@ PHOTO_HERO = f"{BASE_IMG_URL}/WhatsApp%20Image%202026-11-21%20at%2015.59.33.jpeg
 PHOTO_HOME = f"{BASE_IMG_URL}/WhatsApp%20Image%202026-11-21%20at%2015.59.34.jpeg"
 PHOTO_BUSINESS = f"{BASE_IMG_URL}/WhatsApp%20Image%202026-11-21%20at%2015.59.39.jpeg"
 
-MEDIA_STYLE_BLOCK = f"""<style>
-  .brand img {{ height: 36px; width: 36px; border-radius: 6px; object-fit: contain; flex-shrink: 0; }}
-  .hero-image {{ width: 100%; height: 100%; min-height: 360px; background-color: #3a2016; background-image: linear-gradient(0deg,rgba(58,32,22,.12),rgba(58,32,22,.04)), url("{PHOTO_HERO}"); background-position: center; background-size: cover; background-repeat: no-repeat; border-radius: 2px; }}
-  .service-photo {{ width: 100%; height: 260px; background-color: #e8dfd4; background-position: center; background-size: cover; background-repeat: no-repeat; }}
-  .photo-home {{ background-image: url("{PHOTO_HOME}"); }}
-  .photo-business {{ background-image: url("{PHOTO_BUSINESS}"); }}
-</style>"""
-
 
 def apply_media_and_logo_fixes(html_text: str) -> str:
-    html_text = re.sub(
-        r'(<img[^>]*\bsrc=)["\'][^"\']*everclean-icon-512\.png["\']',
-        rf'\1"{LOGO_URL}"',
-        html_text,
-    )
-    html_text = re.sub(
-        r'(<link[^>]*\bhref=)["\'][^"\']*everclean-icon-512\.png["\']',
-        rf'\1"{LOGO_URL}"',
-        html_text,
-    )
-    html_text = re.sub(
-        r'(<meta[^>]*\bcontent=)["\'][^"\']*everclean-icon-512\.png["\']',
-        rf'\1"{LOGO_URL}"',
-        html_text,
-    )
-    html_text = html_text.replace("assets/images/everclean-icon-512.png", LOGO_URL)
-    html_text = html_text.replace("../assets/images/everclean-icon-512.png", LOGO_URL)
+    logo_img_tag = f'<img class="brand-logo-img" src="{LOGO_URL}" alt="EverClean Services logo" width="36" height="36">'
 
-    if "/* EVERCLEAN_MEDIA_FIX */" not in html_text:
-        styled_block = MEDIA_STYLE_BLOCK.replace("<style>", "<style>/* EVERCLEAN_MEDIA_FIX */", 1)
+    def _fix_brand(match: re.Match) -> str:
+        open_tag = match.group(1)
+        inner = match.group(2)
+        if "<img" in inner:
+            inner = re.sub(r'(<img[^>]*\bsrc=)["\'][^"\']*["\']', rf'\1"{LOGO_URL}"', inner)
+            return f"{open_tag}{inner}</a>"
+        return f"{open_tag}{logo_img_tag}{inner}</a>"
+
+    html_text = re.sub(r'(<a[^>]*class="[^"]*\bbrand\b[^"]*"[^>]*>)(.*?)</a>', _fix_brand, html_text, flags=re.DOTALL)
+
+    html_text = re.sub(r'(<link[^>]*rel="(?:icon|shortcut icon|apple-touch-icon)"[^>]*\bhref=)["\'][^"\']*["\']', rf'\1"{LOGO_URL}"', html_text)
+    html_text = re.sub(r'(<meta[^>]*property="og:image"[^>]*\bcontent=)["\'][^"\']*["\']', rf'\1"{LOGO_URL}"', html_text)
+
+    style_block = f"""<style id="everclean-media-fix">
+  .brand {{ display: inline-flex; align-items: center; gap: 10px; }}
+  .brand .brand-logo-img, .brand img {{
+    display: inline-block !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    border-radius: 6px !important;
+    object-fit: contain !important;
+    background: transparent !important;
+  }}
+  .hero-image {{
+    width: 100% !important;
+    min-height: 360px !important;
+    background-color: #3a2016 !important;
+    background-image: linear-gradient(0deg, rgba(58, 32, 22, 0.14), rgba(58, 32, 22, 0.04)), url("{PHOTO_HERO}") !important;
+    background-position: center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    border-radius: 2px !important;
+  }}
+  .service-photo {{
+    width: 100% !important;
+    height: 260px !important;
+    min-height: 260px !important;
+    background-color: #e8dfd4 !important;
+    background-position: center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+  }}
+  .service-photo.photo-home, .photo-home {{
+    background-image: url("{PHOTO_HOME}") !important;
+  }}
+  .service-photo.photo-business, .photo-business {{
+    background-image: url("{PHOTO_BUSINESS}") !important;
+  }}
+</style>"""
+
+    if 'id="everclean-media-fix"' not in html_text:
         if "</head>" in html_text:
-            html_text = html_text.replace("</head>", f"  {styled_block}\n</head>", 1)
+            html_text = html_text.replace("</head>", f"  {style_block}\n</head>", 1)
         else:
-            html_text = f"{styled_block}\n{html_text}"
+            html_text = f"{style_block}\n{html_text}"
+
+    html_text = re.sub(
+        r'(<div[^>]*class="[^"]*\bhero-image\b[^"]*")([^>]*>)',
+        rf'\1 style="background-image: url(\'{PHOTO_HERO}\');"\2',
+        html_text,
+    )
+    html_text = re.sub(
+        r'(<div[^>]*class="[^"]*\bphoto-home\b[^"]*")([^>]*>)',
+        rf'\1 style="background-image: url(\'{PHOTO_HOME}\');"\2',
+        html_text,
+    )
+    html_text = re.sub(
+        r'(<div[^>]*class="[^"]*\bphoto-business\b[^"]*")([^>]*>)',
+        rf'\1 style="background-image: url(\'{PHOTO_BUSINESS}\');"\2',
+        html_text,
+    )
 
     return html_text
 
 
 def strip_html(html_text: str) -> str:
     text = re.sub(r"<script[\s\S]*?</script>", " ", html_text)
-    text = re.sub(r"<style[\s\S]*?</style>", " ", text)
+    text = re.sub(r"<style[\s\S]*?</style>", " ", html_text)
     text = re.sub(r"<[^>]+>", " ", text)
     return re.sub(r"\s+", " ", text).strip()
 
