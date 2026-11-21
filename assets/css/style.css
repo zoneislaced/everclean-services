@@ -57,7 +57,7 @@ h1 em, h2 em { font-family: var(--serif); font-weight: 400; letter-spacing: -.05
 .hero-proof strong { font-size: 12px; margin-bottom: 4px; }
 .hero-proof span { color: var(--muted); font-size: 11px; }
 .hero-visual { height: 475px; position: relative; }
-.hero-image { height: 100%; width: 100%; background: linear-gradient(0deg,rgba(58,32,22,.05),rgba(58,32,22,.02)), url("https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1400&q=85") center/cover; }
+.hero-image { height: 100%; width: 100%; background: linear-gradient(0deg,rgba(58,32,22,.05),rgba(58,32,22,.02)), url("https://raw.githubusercontent.com/zoneislaced/everclean-services/refs/heads/main/assets/images/WhatsApp%20Image%202026-11-21%20at%2015.59.33.jpeg") center/cover; }
 .image-caption { position: absolute; bottom: 18px; left: 20px; color: white; font-size: 11px; letter-spacing: .17em; font-weight: 700; text-shadow: 0 1px 5px #333; }
 .caption-dot { display: inline-block; height: 6px; width: 6px; border-radius: 50%; background: #e3d5c5; margin-right: 8px; }
 .hero-stamp { position: absolute; right: -30px; top: 42px; width: 104px; height: 104px; background: var(--sage); color: var(--forest); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font: 700 11px/1.25 var(--display); letter-spacing: .15em; transform: rotate(9deg); }
@@ -74,8 +74,8 @@ h1 em, h2 em { font-family: var(--serif); font-weight: 400; letter-spacing: -.05
 .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
 .service-card { background: #f4f0ec; }
 .service-photo { height: 260px; background-size: cover; background-position: center; }
-.photo-home { background-image: url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1100&q=85"); }
-.photo-business { background-image: url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1100&q=85"); }
+.photo-home { background-image: url("https://raw.githubusercontent.com/zoneislaced/everclean-services/refs/heads/main/assets/images/WhatsApp%20Image%202026-11-21%20at%2015.59.34.jpeg"); }
+.photo-business { background-image: url("https://raw.githubusercontent.com/zoneislaced/everclean-services/refs/heads/main/assets/images/WhatsApp%20Image%202026-11-21%20at%2015.59.39.jpeg"); }
 .service-content { padding: 30px 34px 34px; }
 .service-number { color: var(--green); font-size: 11px; font-weight: 700; letter-spacing: .18em; }
 .service-content h3 { margin: 13px 0 10px; color: var(--forest); font: 600 30px var(--display); letter-spacing: -.05em; }
@@ -86,7 +86,7 @@ h1 em, h2 em { font-family: var(--serif); font-weight: 400; letter-spacing: -.05
 .arrow-link { display: inline-block; border-bottom: 1px solid #c6b19a; padding-bottom: 8px; margin-top: 8px; }
 .arrow-link span { margin-left: 12px; }
 .manifesto { display: grid; grid-template-columns: 1fr 1fr; background: var(--forest); color: white; min-height: 590px; }
-.manifesto-image { background: url("https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1300&q=85") center/cover; min-height: 500px; }
+.manifesto-image { background: url("https://raw.githubusercontent.com/zoneislaced/everclean-services/refs/heads/main/assets/images/WhatsApp%20Image%202026-11-21%20at%2015.59.41.jpeg") center/cover; min-height: 500px; }
 .manifesto-copy { padding: 92px 11% 70px; align-self: center; }
 .eyebrow-light { color: #dbcab7; }
 .manifesto h2, .contact-copy h2 { color: white; margin: 25px 0; font-size: clamp(40px,4.6vw,61px); }
