@@ -37,8 +37,7 @@ def sync_homepage(towns: list) -> None:
     featured = [by_slug[s] for s in FEATURED_SLUGS if s in by_slug]
 
     featured_links = "\n        ".join(
-        f'<a href="{t[\"slug\"]}/" class="location-item"><span class="location-index">{i+1:02d}</span><span>{t[\"name\"]}</span><span class="location-arrow">↗</span></a>'
-        for i, t in enumerate(featured)
+        f'<a href="{t["slug"]}/" class="location-item"><span class="location-index">{i+1:02d}</span><span>{t["name"]}</span><span class="location-arrow">↗</span></a>'
     )
     all_links = "\n          ".join(
         f'<a href="{t[\"slug\"]}/" class="location-item"><span class="location-index">{i+1:02d}</span><span>{t[\"name\"]} <small>({t.get(\"county\", \"\")})</small></span><span class="location-arrow">↗</span></a>'
