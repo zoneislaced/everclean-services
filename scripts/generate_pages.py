@@ -1,4 +1,4 @@
-fixed_code = '''import json
+import json
 import re
 import difflib
 from pathlib import Path
@@ -18,12 +18,55 @@ FEATURED_SLUGS = [
     "cleaning-services-nakuru",
 ]
 
+BASE_IMG_URL = "https://raw.githubusercontent.com/zoneislaced/everclean-services/refs/heads/main/assets/images"
+LOGO_URL = f"{BASE_IMG_URL}/everclean-icon-512.png"
+PHOTO_HERO = f"{BASE_IMG_URL}/WhatsApp%20Image%202026-11-21%20at%2015.59.33.jpeg"
+PHOTO_HOME = f"{BASE_IMG_URL}/WhatsApp%20Image%202026-11-21%20at%2015.59.34.jpeg"
+PHOTO_BUSINESS = f"{BASE_IMG_URL}/WhatsApp%20Image%202026-11-21%20at%2015.59.39.jpeg"
+
+MEDIA_STYLE_BLOCK = f"""<style>
+  .brand img {{ height: 36px; width: 36px; border-radius: 6px; object-fit: contain; flex-shrink: 0; }}
+  .hero-image {{ width: 100%; height: 100%; min-height: 360px; background-color: #3a2016; background-image: linear-gradient(0deg,rgba(58,32,22,.12),rgba(58,32,22,.04)), url("{PHOTO_HERO}"); background-position: center; background-size: cover; background-repeat: no-repeat; border-radius: 2px; }}
+  .service-photo {{ width: 100%; height: 260px; background-color: #e8dfd4; background-position: center; background-size: cover; background-repeat: no-repeat; }}
+  .photo-home {{ background-image: url("{PHOTO_HOME}"); }}
+  .photo-business {{ background-image: url("{PHOTO_BUSINESS}"); }}
+</style>"""
+
+
+def apply_media_and_logo_fixes(html_text: str) -> str:
+    html_text = re.sub(
+        r'(<img[^>]*\bsrc=)["\'][^"\']*everclean-icon-512\.png["\']',
+        rf'\1"{LOGO_URL}"',
+        html_text,
+    )
+    html_text = re.sub(
+        r'(<link[^>]*\bhref=)["\'][^"\']*everclean-icon-512\.png["\']',
+        rf'\1"{LOGO_URL}"',
+        html_text,
+    )
+    html_text = re.sub(
+        r'(<meta[^>]*\bcontent=)["\'][^"\']*everclean-icon-512\.png["\']',
+        rf'\1"{LOGO_URL}"',
+        html_text,
+    )
+    html_text = html_text.replace("assets/images/everclean-icon-512.png", LOGO_URL)
+    html_text = html_text.replace("../assets/images/everclean-icon-512.png", LOGO_URL)
+
+    if "/* EVERCLEAN_MEDIA_FIX */" not in html_text:
+        styled_block = MEDIA_STYLE_BLOCK.replace("<style>", "<style>/* EVERCLEAN_MEDIA_FIX */", 1)
+        if "</head>" in html_text:
+            html_text = html_text.replace("</head>", f"  {styled_block}\n</head>", 1)
+        else:
+            html_text = f"{styled_block}\n{html_text}"
+
+    return html_text
+
 
 def strip_html(html_text: str) -> str:
-    text = re.sub(r"<script[\\s\\S]*?</script>", " ", html_text)
-    text = re.sub(r"<style[\\s\\S]*?</style>", " ", text)
+    text = re.sub(r"<script[\s\S]*?</script>", " ", html_text)
+    text = re.sub(r"<style[\s\S]*?</style>", " ", text)
     text = re.sub(r"<[^>]+>", " ", text)
-    return re.sub(r"\\s+", " ", text).strip()
+    return re.sub(r"\s+", " ", text).strip()
 
 
 def sync_homepage(towns: list) -> None:
@@ -36,23 +79,23 @@ def sync_homepage(towns: list) -> None:
     by_slug = {t["slug"]: t for t in towns}
     featured = [by_slug[s] for s in FEATURED_SLUGS if s in by_slug]
 
-    featured_links = "\\n        ".join(
+    featured_links = "\n        ".join(
         f'<a href="{t["slug"]}/" class="location-item"><span class="location-index">{i+1:02d}</span><span>{t["name"]}</span><span class="location-arrow">↗</span></a>'
         for i, t in enumerate(featured)
     )
-    all_links = "\\n          ".join(
+    all_links = "\n          ".join(
         f'<a href="{t["slug"]}/" class="location-item"><span class="location-index">{i+1:02d}</span><span>{t["name"]} <small>({t.get("county", "")})</small></span><span class="location-arrow">↗</span></a>'
         for i, t in enumerate(towns)
     )
     towns_block = (
-        "<!-- PSEO_TOWNS_START -->\\n"
-        f"        {featured_links}\\n"
-        f'<details class="all-towns-drawer" style="margin-top: 0.75rem;">\\n'
-        f'          <summary style="cursor: pointer; font-weight: 600; padding: 0.65rem 0; list-style: none;">Browse all {len(towns)} towns across Kenya <span>+</span></summary>\\n'
-        f'          <div class="all-towns-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0.4rem; max-height: 360px; overflow-y: auto; padding-top: 0.5rem;">\\n'
-        f"          {all_links}\\n"
-        "          </div>\\n"
-        "        </details>\\n"
+        "<!-- PSEO_TOWNS_START -->\n"
+        f"        {featured_links}\n"
+        f'<details class="all-towns-drawer" style="margin-top: 0.75rem;">\n'
+        f'          <summary style="cursor: pointer; font-weight: 600; padding: 0.65rem 0; list-style: none;">Browse all {len(towns)} towns across Kenya <span>+</span></summary>\n'
+        f'          <div class="all-towns-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0.4rem; max-height: 360px; overflow-y: auto; padding-top: 0.5rem;">\n'
+        f"          {all_links}\n"
+        "          </div>\n"
+        "        </details>\n"
         "        <!-- PSEO_TOWNS_END -->"
     )
     html_text = re.sub(
@@ -63,10 +106,10 @@ def sync_homepage(towns: list) -> None:
     )
 
     if "<!-- PSEO_TOWN_SELECT_START -->" in html_text and "<!-- PSEO_TOWN_SELECT_END -->" in html_text:
-        opts = "\\n              ".join(f'<option value="{t["name"]}">{t["name"]}</option>' for t in towns)
+        opts = "\n              ".join(f'<option value="{t["name"]}">{t["name"]}</option>' for t in towns)
         select_block = (
-            "<!-- PSEO_TOWN_SELECT_START -->\\n"
-            f'            <select name="town" required><option value="">Select town</option>{opts}<option value="Other / Not listed">Other / Not listed</option></select>\\n'
+            "<!-- PSEO_TOWN_SELECT_START -->\n"
+            f'            <select name="town" required><option value="">Select town</option>{opts}<option value="Other / Not listed">Other / Not listed</option></select>\n'
             "            <!-- PSEO_TOWN_SELECT_END -->"
         )
         html_text = re.sub(
@@ -76,6 +119,7 @@ def sync_homepage(towns: list) -> None:
             flags=re.DOTALL,
         )
 
+    html_text = apply_media_and_logo_fixes(html_text)
     INDEX_FILE.write_text(html_text, encoding="utf-8")
 
 
@@ -105,12 +149,12 @@ def main():
         areas = town.get("areas_served", [])
         faqs = town.get("faqs", [])
 
-        areas_html = "\\n".join(
+        areas_html = "\n".join(
             f'        <div class="location-item"><span class="location-index">{i+1:02d}</span><span>{area}</span><span class="location-arrow">✳</span></div>'
             for i, area in enumerate(areas)
         )
 
-        faqs_html = "\\n".join(
+        faqs_html = "\n".join(
             f'        <details><summary>{item["question"]}<span>+</span></summary><p>{item["answer"]}</p></details>'
             for item in faqs
         )
@@ -142,6 +186,8 @@ def main():
         for key, val in replacements.items():
             page_html = page_html.replace(key, str(val))
 
+        page_html = apply_media_and_logo_fixes(page_html)
+
         out_dir = ROOT / slug
         out_dir.mkdir(parents=True, exist_ok=True)
         (out_dir / "index.html").write_text(page_html, encoding="utf-8")
@@ -152,14 +198,14 @@ def main():
     sync_homepage(towns)
 
     sitemap_content = (
-        '<?xml version="1.0" encoding="UTF-8"?>\\n'
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\\n'
-        + "\\n".join(sitemap_urls)
-        + "\\n</urlset>\\n"
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + "\n".join(sitemap_urls)
+        + "\n</urlset>\n"
     )
     (ROOT / "sitemap.xml").write_text(sitemap_content, encoding="utf-8")
 
-    robots_content = f"User-agent: *\\nAllow: /\\nSitemap: {domain}/sitemap.xml\\n"
+    robots_content = f"User-agent: *\nAllow: /\nSitemap: {domain}/sitemap.xml\n"
     (ROOT / "robots.txt").write_text(robots_content, encoding="utf-8")
 
     warnings = 0
@@ -176,11 +222,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-'''
-
-with open("generate_pages.py", "w", encoding="utf-8") as f:
-    f.write(fixed_code)
-
-import py_compile
-py_compile.compile("generate_pages.py", doraise=True)
-print("Compiled successfully with zero syntax errors!")
