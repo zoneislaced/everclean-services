@@ -1,25 +1,15 @@
-# Reste Propre — Website starter
+# EverClean Services — Website starter
 
-A responsive premium cleaning and facilities services homepage.
+A responsive residential and commercial cleaning services homepage.
 
 ## Preview locally
-1. Extract the project folder.
+1. Open the project folder (`everclean-services`).
 2. Open `index.html` in a browser, or use VS Code Live Server.
 
-## Included
-- Responsive homepage
-- Residential and commercial service sections
-- Brand introduction and process
-- Town/location navigation placeholders
-- FAQ accordion using native HTML details
-- Quote enquiry form UI
-- Mobile navigation
-
 ## Before publishing
-1. Replace the temporary contact placeholders with the company's verified phone, WhatsApp and email.
-2. Connect the quote form to Formspree, Netlify Forms, or another chosen form endpoint. The current form does not transmit enquiries.
-3. Confirm actual services, service areas, claims and testimonials. Do not publish placeholder claims as facts.
-4. Replace or approve the remote Unsplash photography.
+1. Replace `hello@evercleanservices.example` and `YOUR-DOMAIN-HERE.example` with your verified email and live HTTPS domain.
+2. Connect `#quoteForm` in `index.html` / `assets/js/main.js` to Formspree, Netlify Forms, email, or WhatsApp before launch.
+3. Update `data/site_config.json`, `data/towns.json`, and `templates/town-page.html` to match EverClean Services before running `scripts/generate_pages.py`.
 5. Build the PSEO town template and generator as the next phase.
 
 ## PSEO note
