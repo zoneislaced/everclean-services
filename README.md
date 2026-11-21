@@ -1,16 +1,15 @@
-# EverClean Services — Website starter
+# EverClean Services — Website
 
-A responsive residential and commercial cleaning services homepage.
+Static site for EverClean Services (residential and commercial cleaning), hosted on Netlify at https://evercleann.netlify.app
 
 ## Preview locally
-1. Open the project folder (`everclean-services`).
-2. Open `index.html` in a browser, or use VS Code Live Server.
+Open `index.html` in a browser, or use VS Code Live Server. (The form only submits on Netlify.)
+
+## Files you must also have in the project
+`assets/css/style.css` and `assets/js/main.js` are referenced by every page. If they're missing from the deploy, the site is unstyled.
 
 ## Before publishing
-1. Replace `hello@evercleanservices.example` and `YOUR-DOMAIN-HERE.example` with your verified email and live HTTPS domain.
-2. Connect `#quoteForm` in `index.html` / `assets/js/main.js` to Formspree, Netlify Forms, email, or WhatsApp before launch.
-3. Update `data/site_config.json`, `data/towns.json`, and `templates/town-page.html` to match EverClean Services before running `scripts/generate_pages.py`.
-5. Build the PSEO town template and generator as the next phase.
-
-## PSEO note
-The location links are placeholders for generated town pages. The next phase should create a reusable town template, structured town data, unique local content, SEO metadata, internal links and a sitemap.
+1. Add a real email address to the contact section of `index.html` (there's a comment showing where). Don't publish an invented address.
+2. Quote form: it uses Netlify Forms. After deploying, check Netlify → Forms for a form named `quote`, and set up email notifications there.
+3. Update `data/site_config.json`, `data/towns.json` and `templates/town-page.html` to match EverClean Services before running `scripts/generate_pages.py` (see README-PSEO.md for the domain fix).
+4. Generate town pages only for towns you actually serve.
